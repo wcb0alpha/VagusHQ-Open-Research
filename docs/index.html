@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vagus Focus Pacer — Low-Demand Visual Regulation</title>
+  <style>
+    :root {
+      --bg-silk: #F9F8F6;
+      --ink-slate: #2C3E50;
+      --accent-sage: #6F8065;
+      --accent-azure: #A1B5D8;
+      --warm-stone: #F4F1EA;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-silk);
+      color: var(--ink-slate);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    header p {
+      font-size: 0.95rem;
+      color: var(--accent-sage);
+    }
+    .pacer-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 2rem 0;
+    }
+    .pacer-circle {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-azure) 0%, var(--accent-sage) 100%);
+      opacity: 0.85;
+      transform: scale(0.7);
+      transition: transform 4s ease-in-out;
+      box-shadow: 0 10px 30px rgba(44, 62, 80, 0.08);
+    }
+    .pacer-circle.inhale {
+      transform: scale(1.15);
+      transition-duration: 4s;
+    }
+    .pacer-circle.hold {
+      transform: scale(1.15);
+      transition-duration: 4s;
+    }
+    .pacer-circle.exhale {
+      transform: scale(0.7);
+      transition-duration: 6s;
+    }
+    .pacer-label {
+      margin-top: 1.5rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--ink-slate);
+    }
+    .controls {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    button {
+      background: var(--warm-stone);
+      color: var(--ink-slate);
+      border: 1px solid rgba(44, 62, 80, 0.15);
+      padding: 0.6rem 1.2rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    button:hover {
+      background: var(--accent-sage);
+      color: var(--bg-silk);
+    }
+    footer {
+      font-size: 0.85rem;
+      color: rgba(44, 62, 80, 0.7);
+      line-height: 1.6;
+      max-width: 500px;
+    }
+    footer a {
+      color: var(--accent-sage);
+      text-decoration: underline;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Vagus Focus Pacer</h1>
+    <p>Gentle visual rhythm for low-demand somatic grounding</p>
+  </header>
+
+  <main class="pacer-container">
+    <div class="pacer-circle" id="circle"></div>
+    <div class="pacer-label" id="phaseLabel">Ready</div>
+    <div class="controls">
+      <button id="toggleBtn" onclick="togglePacer()">Start Pacer</button>
+    </div>
+  </main>
+
+  <footer>
+    <p>Part of the open-access sensory computing research suite.</p>
+    <p>Explore the full system at <a href="https://www.vagushq.com" target="_blank" rel="noopener">VagusHQ.com</a> and the clinical navigation engine at <a href="https://pathways.vagushq.com" target="_blank" rel="noopener">VagusHQ Pathways</a>.</p>
+  </footer>
+
+  <script>
+    let isRunning = false;
+    let timer = null;
+    const circle = document.getElementById('circle');
+    const label = document.getElementById('phaseLabel');
+    const btn = document.getElementById('toggleBtn');
+
+    function step(phase, duration, nextFn) {
+      if (!isRunning) return;
+      label.textContent = phase;
+      circle.className = 'pacer-circle ' + phase.toLowerCase();
+      timer = setTimeout(nextFn, duration);
+    }
+
+    function runCycle() {
+      if (!isRunning) return;
+      // Inhale 4s -> Hold 4s -> Exhale 6s
+      step('Inhale', 4000, () => {
+        step('Hold', 4000, () => {
+          step('Exhale', 6000, runCycle);
+        });
+      });
+    }
+
+    function togglePacer() {
+      isRunning = !isRunning;
+      if (isRunning) {
+        btn.textContent = 'Pause';
+        runCycle();
+      } else {
+        clearTimeout(timer);
+        btn.textContent = 'Start Pacer';
+        label.textContent = 'Paused';
+        circle.className = 'pacer-circle';
+      }
+    }
+  </script>
+</body>
+</html>

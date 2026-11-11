@@ -1,0 +1,23 @@
+# Security & Environment Lock
+.env*
+*.key
+*.pem
+*.token
+*.cert
+*.secret
+*credentials*
+
+# System & OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Python & Node
+__pycache__/
+*.pyc
+node_modules/
+dist/
+build/
+*.log
+scratch/
+.venv/
